@@ -1,0 +1,27 @@
+name: Setup Hindi TTS Model LFS
+on: workflow_dispatch
+jobs:
+  download-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Git LFS
+        run: |
+          git lfs install
+          git lfs track "*.bin"
+          git add .gitattributes
+      - name: Download Model
+        run: |
+          mkdir -p models
+          curl -L -o models/hindi_tts_checkpoint.bin https://huggingface.co/Futurix-AI/Hindi-TTS/resolve/main/hindi_tts_checkpoint.bin
+          curl -L -o models/vocab.txt https://huggingface.co/Futurix-AI/Hindi-TTS/resolve/main/vocab.txt
+      - name: Commit and Push
+        run: |
+          git config --global user.name "Zapia Automation"
+          git config --global user.email "zapia-auto@brainlogic.ai"
+          git add models/ .gitattributes
+          git commit -m "Add Futurix-AI Hindi TTS model (LFS)"
+          git push origin main
